@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AetherAI - Recording &amp; Analyzing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#f8f9ff",
+                    "outline": "#6d7a77",
+                    "surface-bright": "#f8f9ff",
+                    "error": "#ba1a1a",
+                    "surface": "#f8f9ff",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#3d4947",
+                    "surface-variant": "#d3e4fe",
+                    "on-secondary-fixed": "#111c2d",
+                    "surface-dim": "#cbdbf5",
+                    "surface-tint": "#006a61",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed": "#370e00",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "secondary-container": "#d5e0f8",
+                    "secondary-fixed": "#d8e3fb",
+                    "on-tertiary-fixed-variant": "#773215",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#0b1c30",
+                    "outline-variant": "#bcc9c6",
+                    "inverse-primary": "#6bd8cb",
+                    "on-secondary-container": "#586377",
+                    "surface-container-low": "#eff4ff",
+                    "primary": "#00685f",
+                    "on-primary-fixed-variant": "#005049",
+                    "secondary": "#545f73",
+                    "on-primary-container": "#f4fffc",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#6bd8cb",
+                    "secondary-fixed-dim": "#bcc7de",
+                    "on-background": "#0b1c30",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#213145",
+                    "tertiary-container": "#b05e3d",
+                    "on-primary-fixed": "#00201d",
+                    "surface-container-high": "#dce9ff",
+                    "tertiary-fixed": "#ffdbce",
+                    "primary-fixed": "#89f5e7",
+                    "on-error": "#ffffff",
+                    "primary-container": "#008378",
+                    "surface-container-highest": "#d3e4fe",
+                    "tertiary": "#924628",
+                    "on-tertiary-container": "#fffbff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-secondary-fixed-variant": "#3c475a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "md": "16px",
+                    "base": "4px",
+                    "gutter": "20px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "container-max": "1440px",
+                    "sm": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "display": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "mono-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "mono-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .visualizer-bar {
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+        
+        @keyframes bounce {
+            0% { transform: scaleY(0.2); }
+            100% { transform: scaleY(1); }
+        }
+        
+        .bar-1 { animation-delay: 0.1s; }
+        .bar-2 { animation-delay: 0.3s; }
+        .bar-3 { animation-delay: 0.0s; }
+        .bar-4 { animation-delay: 0.4s; }
+        .bar-5 { animation-delay: 0.2s; }
+        .bar-6 { animation-delay: 0.5s; }
+        .bar-7 { animation-delay: 0.1s; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen relative overflow-hidden flex justify-center items-center">
+<!-- Mock Background Dashboard Context -->
+<div class="absolute inset-0 opacity-20 pointer-events-none filter blur-sm">
+<div class="w-full h-16 border-b border-outline-variant bg-surface flex items-center px-lg justify-between">
+<div class="font-headline-md font-bold text-primary">AetherAI</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 rounded-full bg-secondary-container"></div>
+<div class="w-8 h-8 rounded-full bg-secondary-container"></div>
+</div>
+</div>
+<div class="flex h-[calc(100vh-64px)]">
+<div class="w-60 border-r border-outline-variant p-md flex flex-col gap-4">
+<div class="h-10 bg-surface-variant rounded"></div>
+<div class="h-10 bg-surface-variant rounded"></div>
+<div class="h-10 bg-surface-variant rounded"></div>
+</div>
+<div class="flex-1 p-xl grid grid-cols-3 gap-md">
+<div class="col-span-2 h-64 bg-surface border border-outline-variant rounded-lg"></div>
+<div class="col-span-1 h-64 bg-surface border border-outline-variant rounded-lg"></div>
+<div class="col-span-3 h-96 bg-surface border border-outline-variant rounded-lg"></div>
+</div>
+</div>
+</div>
+<!-- Backdrop Overlay -->
+<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-[4px] z-40"></div>
+<!-- Centered Dialog / Modal -->
+<div class="relative z-50 bg-surface w-full max-w-lg rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-xl flex flex-col items-center text-center">
+<!-- Pulsing Mic Icon -->
+<div class="relative w-24 h-24 flex justify-center items-center mb-xl">
+<div class="absolute inset-0 bg-primary-container rounded-full pulse-ring"></div>
+<div class="absolute inset-0 bg-primary/20 rounded-full scale-125 pulse-ring" style="animation-delay: 0.5s;"></div>
+<div class="relative w-16 h-16 bg-primary rounded-full flex justify-center items-center text-on-primary shadow-lg z-10">
+<span class="material-symbols-outlined" style="font-size: 32px; font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+</div>
+<!-- Animated Audio Visualizer -->
+<div class="flex items-end gap-2 h-16 mb-lg">
+<div class="w-2 bg-primary rounded-full visualizer-bar bar-1 h-full transform origin-bottom"></div>
+<div class="w-2 bg-primary rounded-full visualizer-bar bar-2 h-full transform origin-bottom"></div>
+<div class="w-2 bg-primary rounded-full visualizer-bar bar-3 h-full transform origin-bottom"></div>
+<div class="w-2 bg-primary rounded-full visualizer-bar bar-4 h-full transform origin-bottom"></div>
+<div class="w-2 bg-primary rounded-full visualizer-bar bar-5 h-full transform origin-bottom"></div>
+<div class="w-2 bg-primary rounded-full visualizer-bar bar-6 h-full transform origin-bottom"></div>
+<div class="w-2 bg-primary rounded-full visualizer-bar bar-7 h-full transform origin-bottom"></div>
+</div>
+<!-- Status Text -->
+<div class="mb-xl w-full">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-sm transition-opacity duration-500" id="status-headline">
+                Listening for Cough Acoustics...
+            </h2>
+<p class="font-body-md text-body-md text-secondary font-mono-sm" id="status-subtext">
+                00:05
+            </p>
+</div>
+<!-- Cancel Action -->
+<button class="bg-surface text-error border border-error hover:bg-error-container font-label-md text-label-md px-lg py-sm rounded transition-colors focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2">
+            Cancel Recording
+        </button>
+</div>
+<script>
+        // Simple script to simulate the transition from Recording to Analyzing
+        setTimeout(() => {
+            const headline = document.getElementById('status-headline');
+            const subtext = document.getElementById('status-subtext');
+            const micIcon = document.querySelector('.material-symbols-outlined');
+            const bars = document.querySelectorAll('.visualizer-bar');
+            
+            // Fade out
+            headline.style.opacity = '0';
+            subtext.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Change text
+                headline.innerText = 'AI Agents Analyzing Acoustics and Symptoms...';
+                subtext.innerText = 'Processing multi-modal data...';
+                
+                // Change icon
+                micIcon.innerText = 'troubleshoot';
+                
+                // Change visualizer color to indicate processing
+                bars.forEach(bar => {
+                    bar.classList.remove('bg-primary');
+                    bar.classList.add('bg-tertiary-container');
+                    // Randomize animation speed a bit for 'processing' feel
+                    bar.style.animationDuration = (Math.random() * 0.5 + 0.2) + 's';
+                });
+                
+                // Fade in
+                headline.style.opacity = '1';
+                subtext.style.opacity = '1';
+            }, 500);
+            
+        }, 5000); // Trigger after 5 seconds
+    </script>
+</body></html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AetherAI - Triage Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f8f9ff",
+                        "outline": "#6d7a77",
+                        "surface-bright": "#f8f9ff",
+                        "error": "#ba1a1a",
+                        "surface": "#f8f9ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#3d4947",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary-fixed": "#111c2d",
+                        "surface-dim": "#cbdbf5",
+                        "surface-tint": "#006a61",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#370e00",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "secondary-container": "#d5e0f8",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-tertiary-fixed-variant": "#773215",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#0b1c30",
+                        "outline-variant": "#bcc9c6",
+                        "inverse-primary": "#6bd8cb",
+                        "on-secondary-container": "#586377",
+                        "surface-container-low": "#eff4ff",
+                        "primary": "#00685f",
+                        "on-primary-fixed-variant": "#005049",
+                        "secondary": "#545f73",
+                        "on-primary-container": "#f4fffc",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed-dim": "#6bd8cb",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-background": "#0b1c30",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "tertiary-container": "#b05e3d",
+                        "on-primary-fixed": "#00201d",
+                        "surface-container-high": "#dce9ff",
+                        "tertiary-fixed": "#ffdbce",
+                        "primary-fixed": "#89f5e7",
+                        "on-error": "#ffffff",
+                        "primary-container": "#008378",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary": "#924628",
+                        "on-tertiary-container": "#fffbff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-secondary-fixed-variant": "#3c475a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "base": "4px",
+                        "gutter": "20px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "container-max": "1440px",
+                        "sm": "8px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "mono-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "mono-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Grid background pattern for technical feel */
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                              linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface dark:bg-on-surface-variant border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim icon-fill font-headline-lg text-headline-lg">hub</span>
+<span class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed-dim tracking-tight">AetherAI</span>
+</div>
+<div class="flex items-center gap-md">
+<!-- Search bar on left logic implies search might be grouped near logo, but standard pattern places it central or right before actions. Leaving simple for clinical view. -->
+<button class="text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-surface-container-highest transition-colors p-sm rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">sensors</span>
+</button>
+<button class="text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-surface-container-highest transition-colors p-sm rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container dark:hover:bg-surface-container-highest transition-colors p-sm rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="hidden md:flex fixed left-0 top-16 h-[calc(100vh-64px)] w-60 flex-col p-md bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant dark:border-outline">
+<div class="mb-lg px-sm">
+<div class="font-label-md text-label-md text-secondary uppercase tracking-wider mb-xs">Station 04 - Online</div>
+<div class="font-headline-md text-headline-md font-bold text-primary">Clinical Portal</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm px-md rounded-lg mb-lg flex items-center justify-center gap-sm hover:opacity-90 active:scale-95 duration-150 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            New Triage
+        </button>
+<ul class="flex-1 flex flex-col gap-xs">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant transition-all cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant transition-all cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">person_add</span>
+<span class="font-label-md text-label-md">Patient Intake</span>
+</a>
+</li>
+<!-- Active State: Cough Analysis -->
+<li>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container font-semibold rounded-lg cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined icon-fill">mic</span>
+<span class="font-label-md text-label-md">Cough Analysis</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant transition-all cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">Triage History</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant transition-all cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+</li>
+</ul>
+<ul class="mt-auto flex flex-col gap-xs border-t border-outline-variant pt-sm">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant transition-all cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant transition-all cursor-pointer active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-16 md:pl-60 min-h-screen">
+<div class="max-w-container-max mx-auto p-md md:p-lg lg:p-xl">
+<!-- Context Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-lg border-b border-outline-variant pb-md">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-mono-sm text-mono-sm text-secondary bg-surface-container-highest px-xs py-[2px] rounded">ID: PT-89921-X</span>
+<span class="font-mono-sm text-mono-sm text-secondary flex items-center gap-[2px]"><span class="material-symbols-outlined text-[14px]">schedule</span> 14:02, Today</span>
+</div>
+<h1 class="font-display text-display text-on-surface">Analysis Complete</h1>
+</div>
+</div>
+<!-- 12-Column Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Primary Focus Area (Cols 1-8) -->
+<div class="col-span-1 md:col-span-8 flex flex-col gap-lg">
+<!-- RED STATE: Critical Triage Alert -->
+<div class="bg-error-container border-l-[6px] border-error rounded-r-xl p-md md:p-lg shadow-sm relative overflow-hidden flex flex-col sm:flex-row gap-md sm:gap-lg items-start">
+<!-- Subtle background glow/pattern -->
+<div class="absolute inset-0 bg-gradient-to-r from-error/10 to-transparent pointer-events-none"></div>
+<div class="bg-error/10 p-sm rounded-full flex-shrink-0 z-10">
+<span class="material-symbols-outlined text-error font-display text-display icon-fill" style="font-size: 48px; line-height: 48px;">warning</span>
+</div>
+<div class="z-10 flex-1">
+<span class="font-label-md text-label-md text-on-error-container uppercase tracking-widest font-bold mb-xs block opacity-80">CRITICAL PRIORITY MATCH</span>
+<h2 class="font-headline-lg text-headline-lg text-on-error-container mb-sm">High Suspicion of TB/Pneumonia</h2>
+<div class="bg-surface-container-lowest/60 border border-error/20 rounded-lg p-md mb-md backdrop-blur-sm">
+<h3 class="font-label-md text-label-md text-on-error-container font-semibold flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-[16px]">integration_instructions</span>
+                                    Clinical Instructions
+                                </h3>
+<p class="font-body-lg text-body-lg text-on-error-container">
+                                    Refer immediately for GeneXpert test. Instruct patient to wear an N95 mask immediately and isolate.
+                                </p>
+</div>
+<div class="flex flex-wrap gap-md mt-sm">
+<button class="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg flex items-center gap-xs hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                                    Generate Referral PDF
+                                </button>
+<button class="bg-surface-container-lowest text-on-surface border border-outline-variant font-label-md text-label-md px-md py-sm rounded-lg hover:bg-surface-container-lowest/80 transition-colors">
+                                    Start New Patient
+                                </button>
+</div>
+</div>
+</div>
+<!-- AI Insights Bento Grid -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<div class="flex items-center justify-between mb-md cursor-pointer group" id="accordion-toggle">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">memory</span>
+                                AI Diagnostic Insights
+                            </h3>
+<span class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors transform duration-200" id="accordion-icon">expand_more</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md transition-all duration-300 origin-top" id="accordion-content">
+<!-- Visualization Card (Spans 2 cols on md/lg) -->
+<div class="col-span-1 sm:col-span-2 lg:col-span-2 bg-surface-bright border border-outline-variant rounded-lg p-sm relative overflow-hidden group">
+<div class="flex justify-between items-center mb-xs px-xs">
+<span class="font-label-md text-label-md text-secondary">Audio Spectrogram Analysis</span>
+<span class="font-mono-sm text-mono-sm text-primary flex items-center gap-xs"><span class="material-symbols-outlined text-[14px]">graphic_eq</span> Live</span>
+</div>
+<div class="h-32 w-full rounded bg-on-surface-variant relative overflow-hidden">
+<!-- Embedded Animation Placeholder for Spectrogram -->
+
+<!-- Fallback structural overlay to look clinical if animation fails to load instantly -->
+<div class="absolute inset-0 bg-grid-pattern opacity-20"></div>
+<div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-on-surface-variant to-transparent pointer-events-none"></div>
+</div>
+</div>
+<!-- Metrics & Findings -->
+<div class="col-span-1 flex flex-col gap-md">
+<div class="bg-surface-bright border border-outline-variant rounded-lg p-md flex-1 flex flex-col justify-center">
+<span class="font-label-md text-label-md text-secondary mb-xs">Primary Finding</span>
+<span class="font-body-lg text-body-lg text-on-surface font-medium leading-tight">ResNet50 detected distinct <span class="text-error font-bold">crackles</span> in lower lobes.</span>
+</div>
+<div class="bg-surface-bright border border-outline-variant rounded-lg p-md flex-1 flex flex-col justify-center relative overflow-hidden">
+<div class="absolute right-0 top-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+<span class="font-label-md text-label-md text-secondary mb-xs">Model Confidence</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-display text-display text-primary tracking-tighter">94</span>
+<span class="font-headline-md text-headline-md text-primary">%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Area / Triage Queue Context (Cols 9-12) -->
+<div class="col-span-1 md:col-span-4 flex flex-col gap-md">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs border-b border-outline-variant pb-xs">Recent Queue Activity</h3>
+<!-- YELLOW STATE: Warning Alert Card -->
+<div class="bg-surface-container-lowest border-l-[4px] border-tertiary rounded-r-lg p-md shadow-sm hover:shadow-md transition-shadow cursor-default group">
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-tertiary mt-[2px]">warning</span>
+<div>
+<div class="flex justify-between items-center mb-xs">
+<span class="font-mono-sm text-mono-sm text-secondary">PT-89920-Y</span>
+<span class="font-label-md text-label-md text-secondary">10 min ago</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface mb-xs">Medical Review Recommended</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Refer to clinic within 48 hours for follow-up evaluation.</p>
+</div>
+</div>
+</div>
+<!-- GREEN STATE: Safe Alert Card -->
+<div class="bg-surface-container-lowest border-l-[4px] border-primary rounded-r-lg p-md shadow-sm hover:shadow-md transition-shadow cursor-default group opacity-80">
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary mt-[2px]">check_circle</span>
+<div>
+<div class="flex justify-between items-center mb-xs">
+<span class="font-mono-sm text-mono-sm text-secondary">PT-89919-Z</span>
+<span class="font-label-md text-label-md text-secondary">45 min ago</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface mb-xs">Viral/Common Cold</h4>
+<p class="font-body-md text-body-md text-on-surface-variant font-medium">DO NOT dispense antibiotics.</p>
+</div>
+</div>
+</div>
+<!-- Additional List Item to show scale -->
+<div class="bg-surface-container-lowest border-l-[4px] border-outline rounded-r-lg p-md shadow-sm opacity-60">
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary mt-[2px]">info</span>
+<div>
+<div class="flex justify-between items-center mb-xs">
+<span class="font-mono-sm text-mono-sm text-secondary">PT-89918-W</span>
+<span class="font-label-md text-label-md text-secondary">1 hr ago</span>
+</div>
+<h4 class="font-body-md text-body-md font-semibold text-on-surface">Baseline Scan Complete</h4>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple vanilla JS for the accordion interaction
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('accordion-toggle');
+            const content = document.getElementById('accordion-content');
+            const icon = document.getElementById('accordion-icon');
+            
+            let isExpanded = true; // Start expanded to show the cool bento UI
+
+            toggle.addEventListener('click', () => {
+                isExpanded = !isExpanded;
+                
+                if (isExpanded) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    content.style.opacity = "1";
+                    content.style.marginTop = "16px"; // md spacing
+                    icon.style.transform = "rotate(0deg)";
+                    setTimeout(() => { content.style.maxHeight = "none"; }, 300); // clear max-height after transition
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px"; // set explicit height before collapsing
+                    
+                    // Force reflow
+                    void content.offsetWidth;
+                    
+                    content.style.maxHeight = "0px";
+                    content.style.opacity = "0";
+                    content.style.marginTop = "0px";
+                    content.style.overflow = "hidden";
+                    icon.style.transform = "rotate(-90deg)";
+                }
+            });
+        });
+    </script>
+</body></html>
