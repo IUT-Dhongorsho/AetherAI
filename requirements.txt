@@ -1,0 +1,45 @@
+# === Core Backend ===
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-multipart==0.0.9
+python-dotenv==1.0.1
+
+# === Database ===
+sqlalchemy==2.0.31
+sqlite3  # (Built-in)
+
+# === ML / Audio Processing ===
+torch==2.3.0
+torchvision==0.18.0
+librosa==0.10.1
+soundfile==0.12.1
+numpy==1.26.4
+scipy==1.13.0
+
+# === NLP / Transcription ===
+openai-whisper==20231117
+transformers==4.41.2
+sentencepiece==0.2.0
+
+# === LangGraph / RAG ===
+langgraph==0.0.20
+langchain==0.2.0
+langchain-community==0.2.0
+faiss-cpu==1.8.0
+pypdf==4.3.1
+
+# === LLM (Google Gemini) ===
+google-generativeai==0.7.0
+
+# === Frontend / UI (Gradio) ===
+gradio==4.36.1
+
+# === PDF Generation ===
+reportlab==4.2.2
+
+# === Testing ===
+pytest==8.2.1
+httpx==0.27.0
+
+# === Utils ===
+pydantic==2.7.4

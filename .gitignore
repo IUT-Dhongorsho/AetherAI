@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Environment & Secrets
+.env
+.env.local
+*.pth
+*.pt
+*.h5
+*.pb
+*.onnx
+
+# Node (for your React frontend teammate)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads / Data
+uploads/
+data/raw/
+data/processed/
+*.wav
+*.mp3
+
+# Logs
+logs/
+*.log
