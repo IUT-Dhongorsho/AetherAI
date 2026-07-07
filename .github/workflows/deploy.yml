@@ -154,9 +154,14 @@ jobs:
 
       # Option B: Deploy to Render (using webhook)
       - name: Trigger Render Deploy
-        if: secrets.RENDER_DEPLOY_HOOK_URL != ''
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
-          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+          if [ -n "$RENDER_HOOK" ]; then
+            curl -X POST "$RENDER_HOOK"
+          else
+            echo "No Render hook URL provided. Skipping."
+          fi
 
       # Fallback: Just tell us it's ready
       - name: Deployment Summary
