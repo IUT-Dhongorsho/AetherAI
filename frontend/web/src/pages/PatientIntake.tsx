@@ -6,8 +6,10 @@ const PatientIntake = () => {
   const [isRecording, setIsRecording] = useState(false);
   const navigate = useNavigate();
 
-  const handleRecordComplete = () => {
+  const handleRecordComplete = (audioBlob: Blob) => {
+    console.log("Recording complete. Audio blob size:", audioBlob.size);
     setIsRecording(false);
+    // TODO: Send audioBlob to the FastAPI backend
     navigate('/results');
   };
 
@@ -95,7 +97,7 @@ const PatientIntake = () => {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
               <div className="relative z-10 w-full flex flex-col items-center">
                 <h3 className="font-headline-md text-headline-md text-on-surface mb-2">Acoustic Analysis</h3>
-                <p className="font-body-md text-body-md text-secondary mb-xl max-w-xs">Ensure the microphone is positioned ~30cm from the patient in a quiet environment.</p>
+                <p className="font-body-md text-body-md text-secondary mb-xl max-w-[320px]">Ensure the microphone is positioned ~30cm from the patient in a quiet environment.</p>
                 <button
                   onClick={() => setIsRecording(true)}
                   className="w-32 h-32 rounded-full bg-surface-container-lowest border border-outline-variant shadow-sm flex flex-col items-center justify-center gap-2 hover:border-primary hover:shadow-[0_0_15px_rgba(0,104,95,0.2)] transition-all group relative"
@@ -104,7 +106,7 @@ const PatientIntake = () => {
                   <span className="material-symbols-outlined text-[48px] text-primary group-hover:scale-110 transition-transform duration-300">mic</span>
                   <span className="font-label-md text-label-md text-primary font-bold">RECORD</span>
                 </button>
-                <div className="mt-xl w-full max-w-xs bg-surface border border-outline-variant rounded-lg p-3 flex items-center justify-between shadow-sm">
+                <div className="mt-xl w-full max-w-[320px] bg-surface border border-outline-variant rounded-lg p-3 flex items-center justify-between shadow-sm">
                   <div className="flex items-center gap-2">
                     <span className="material-symbols-outlined text-secondary text-[16px]">settings_voice</span>
                     <span className="font-label-md text-label-md text-on-surface-variant">Input Level</span>
