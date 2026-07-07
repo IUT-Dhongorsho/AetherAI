@@ -3,6 +3,7 @@ from google import genai
 from google.genai import types
 from backend.config import settings
 from backend.core.graph.state import PatientState
+from backend.core.agents.diagnosis_agent.schemas import DiagnosisResult
 
 def diagnosis_agent(state: PatientState) -> PatientState:
     """
@@ -37,17 +38,10 @@ def diagnosis_agent(state: PatientState) -> PatientState:
     {json.dumps(context, indent=2)}
     
     RAG GUIDELINES:
-    {json.dumps(state.get("retrieved_guidelines", []), indent=2)}
+    {json.dumps(state.get("retrieved_docs", []), indent=2)}
     
     OUTPUT:
-    Return ONLY a JSON object exactly matching this structure:
-    {{
-      "primary_diagnosis": "Disease Name",
-      "confidence": 0.85,
-      "triage_level": "RED|YELLOW|GREEN",
-      "action_text": "Specific instructions for pharmacist",
-      "citations": ["Citation 1", "Citation 2"]
-    }}
+    Return a response that strictly adheres to the provided schema.
     """
 
     print("⏳ Diagnosis Agent: Contacting Gemini 3.5 Flash API (this may take a moment if Google's servers are busy...)")
@@ -57,6 +51,7 @@ def diagnosis_agent(state: PatientState) -> PatientState:
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
+                response_schema=DiagnosisResult,
                 temperature=0.2,
             )
         )

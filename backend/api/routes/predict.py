@@ -8,7 +8,7 @@ from datetime import datetime
 from backend.api.dependencies import get_db_session
 from backend.core.graph.workflow import app_graph
 from backend.core.graph.state import PatientState
-from backend.database.models import Patient, Diagnosis
+from backend.database import crud
 from backend.config import settings
 from backend.services.reporting.service import generate_pdf_report
 
@@ -56,19 +56,18 @@ async def predict(
         raise HTTPException(500, f"Agent pipeline failed: {str(e)}")
     
     # 5. Save patient to DB
-    patient = Patient(
-        id=patient_id,
+    patient = crud.create_patient(
+        db=db,
+        patient_id=patient_id,
         age=age,
         gender=gender,
-        region=region,
-        created_at=datetime.utcnow()
+        region=region
     )
-    db.add(patient)
     
     # 6. Save diagnosis to DB
-    diagnosis = Diagnosis(
+    diagnosis = crud.create_diagnosis(
+        db=db,
         patient_id=patient_id,
-        timestamp=datetime.utcnow(),
         prediction=result_state.get("audio_prediction", {}),
         triage_level=result_state.get("triage_level", "UNKNOWN"),
         action_text=result_state.get("action_text", ""),
@@ -76,9 +75,6 @@ async def predict(
         confidence=result_state.get("diagnosis", {}).get("confidence", 0.0),
         citations=result_state.get("citations", [])
     )
-    db.add(diagnosis)
-    db.commit()
-    db.refresh(diagnosis)
     
     # 7. Generate PDF report
     pdf_path = generate_pdf_report(

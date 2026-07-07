@@ -11,7 +11,8 @@ os.environ["TORCH_HOME"] = weights_dir
 
 from backend.api.routes import predict, history
 from backend.config import settings
-from backend.database.models import Base, engine
+from backend.database.models import Base
+from backend.database.session import engine
 
 # Create tables
 Base.metadata.create_all(bind=engine)
