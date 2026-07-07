@@ -50,3 +50,7 @@ data/processed/
 # Logs
 logs/
 *.log
+*._
+
+# Weights
+weights/

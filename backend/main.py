@@ -3,6 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
+# Force HuggingFace and PyTorch to download weights into the current project directory
+weights_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "weights"))
+os.makedirs(weights_dir, exist_ok=True)
+os.environ["HF_HOME"] = weights_dir
+os.environ["TORCH_HOME"] = weights_dir
+
 from backend.api.routes import predict, history
 from backend.config import settings
 from backend.database.models import Base, engine
