@@ -125,7 +125,7 @@ Different respiratory diseases produce distinct acoustic biomarkers such as:
 - Wheezes
 - Rhonchi
 
-These patterns become visually distinguishable in **Mel-Spectrograms**, allowing CNN architectures such as ResNet50 to learn disease-specific representations.
+These patterns become visually åçdistinguishable in **Mel-Spectrograms**, allowing CNN architectures such as ResNet50 to learn disease-specific representations.
 
 ---
 

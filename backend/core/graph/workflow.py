@@ -20,7 +20,6 @@ def build_workflow():
     workflow.add_edge("symptom_classifier", "rag_retriever")
     workflow.add_edge("rag_retriever", "diagnosis_agent")
     workflow.add_edge("diagnosis_agent", END)
-    
     return workflow.compile()
 
 app_graph = build_workflow()

@@ -16,7 +16,7 @@ def diagnosis_agent(state: PatientState) -> PatientState:
         state["action_text"] = "Please provide GEMINI_API_KEY in .env to get a real diagnosis."
         state["citations"] = []
         return state
-
+    
     client = genai.Client(api_key=settings.GEMINI_API_KEY)
     
     # Construct the prompt context from state
@@ -69,7 +69,7 @@ def diagnosis_agent(state: PatientState) -> PatientState:
         state["triage_level"] = result.get("triage_level", "YELLOW")
         state["action_text"] = result.get("action_text", "")
         state["citations"] = result.get("citations", [])
-        
+    
     except Exception as e:
         print(f"⚠️ LLM API Error: {e}")
         state["diagnosis"] = {"primary": "Service Unavailable", "confidence": 0.0}
