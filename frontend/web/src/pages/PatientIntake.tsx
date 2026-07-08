@@ -40,7 +40,8 @@ const PatientIntake = () => {
       formData.append('pharmacist_notes', notes);
       if (age) formData.append('age', age);
 
-      const response = await fetch('/api/v1/predict', {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+      const response = await fetch(`${baseUrl}/predict`, {
         method: 'POST',
         body: formData,
       });
