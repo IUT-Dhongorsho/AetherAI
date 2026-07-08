@@ -19,9 +19,9 @@ const Sidebar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/intake" className={({isActive}) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-all active:scale-95 duration-150 ${isActive ? 'bg-secondary-container text-on-secondary-container font-semibold' : 'text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant'}`}>
-            <span className="material-symbols-outlined">person_add</span>
-            <span className="font-label-md text-label-md">Patient Intake</span>
+          <NavLink to="/chat" className={({isActive}) => `flex items-center gap-3 px-3 py-2 rounded-lg transition-all active:scale-95 duration-150 ${isActive ? 'bg-secondary-container text-on-secondary-container font-semibold' : 'text-secondary dark:text-secondary-fixed-dim hover:bg-surface-variant'}`}>
+            <span className="material-symbols-outlined">forum</span>
+            <span className="font-label-md text-label-md">AI Doctor</span>
           </NavLink>
         </li>
         <li>

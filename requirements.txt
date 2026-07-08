@@ -8,22 +8,13 @@ python-dotenv==1.1.1
 sqlalchemy==2.0.43
 
 # === ML / Audio Processing ===
-torch==2.7.1
-torchvision==0.22.1
 librosa==0.11.0
 soundfile==0.13.1
 numpy==2.2.6
 scipy==1.15.3
+matplotlib==3.10.1
 
-# === NLP / Transcription ===
-transformers==4.56.2
-sentencepiece==0.2.1
-
-# === RAG (hand-rolled, no LangChain) ===
-faiss-cpu==1.11.0
-pypdf==5.6.1
-
-# === LLM (Google Gemini — new unified SDK) ===
+# === LLM (Google Gemini) ===
 google-genai==1.20.0
 
 # === Frontend / UI ===
@@ -32,9 +23,12 @@ gradio==5.38.0
 # === PDF Generation ===
 reportlab==4.4.2
 
-# === Testing ===
+# === Testing / External API ===
 pytest==8.4.1
 httpx==0.28.1
 
 # === Utils ===
-pydantic==2.11.7langgraph
+pydantic==2.11.7
+
+# === Computer Vision ===
+opencv-python==4.10.0.84

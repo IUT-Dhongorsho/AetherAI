@@ -162,9 +162,19 @@ const TriageResults = () => {
                     <span className="material-symbols-outlined text-[14px]">graphic_eq</span> Live
                   </span>
                 </div>
-                <div className="h-32 w-full rounded bg-on-surface-variant relative overflow-hidden">
-                  <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
-                  <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-on-surface-variant to-transparent pointer-events-none"></div>
+                <div className="h-32 w-full rounded bg-on-surface-variant relative overflow-hidden flex items-center justify-center">
+                  {triageData.cough_graph_url ? (
+                    <img 
+                      src={`http://127.0.0.1:8000${triageData.cough_graph_url}`} 
+                      alt="Cough Spectrogram" 
+                      className="w-full h-full object-cover" 
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
+                      <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-on-surface-variant to-transparent pointer-events-none"></div>
+                    </>
+                  )}
                 </div>
               </div>
 

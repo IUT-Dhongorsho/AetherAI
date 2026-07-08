@@ -9,7 +9,7 @@ os.makedirs(weights_dir, exist_ok=True)
 os.environ["HF_HOME"] = weights_dir
 os.environ["TORCH_HOME"] = weights_dir
 
-from backend.api.routes import predict, history
+from backend.api.routes import chat, tests
 from backend.config import settings
 from backend.database.models import Base
 from backend.database.session import engine
@@ -36,8 +36,8 @@ os.makedirs("reports", exist_ok=True)
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
 # Include routers
-app.include_router(predict.router, prefix="/api/v1", tags=["Prediction"])
-app.include_router(history.router, prefix="/api/v1", tags=["History"])
+app.include_router(chat.router, prefix="/api/v1", tags=["Chat"])
+app.include_router(tests.router, prefix="/api/v1", tags=["Tests"])
 
 @app.get("/")
 async def root():
