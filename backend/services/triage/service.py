@@ -11,54 +11,76 @@ def determine_triage(
     patient_history: Dict[str, Any]
 ) -> Tuple[str, str, str]:
     """
-    Returns: (triage_level, action_text, color_code)
+    Implements deterministic rules for patient triage.
+    
+    Inputs:
+        audio_prediction: Dictionary containing class probabilities (e.g. Normal, Pneumonia, Tuberculosis, Asthma, COPD, or crackles, wheezes, normal)
+        patient_history: Dictionary containing patient history details (e.g. fever, duration_days, weight_loss)
+        
+    Returns:
+        (triage_level, action_text, emoji)
     """
     # Extract confidence scores
-    crackles = audio_prediction.get("crackles", 0.0)
-    wheezes = audio_prediction.get("wheezes", 0.0)
-    normal = audio_prediction.get("normal", 0.0)
+    # Support both acoustic biomarkers (crackles, wheezes, normal) and predicted diseases
+    crackles = audio_prediction.get(
+        "crackles", 
+        max(audio_prediction.get("Tuberculosis", 0.0), audio_prediction.get("Pneumonia", 0.0))
+    )
+    wheezes = audio_prediction.get(
+        "wheezes", 
+        max(audio_prediction.get("Asthma", 0.0), audio_prediction.get("COPD", 0.0))
+    )
+    normal = audio_prediction.get(
+        "normal", 
+        audio_prediction.get("Normal", 0.0)
+    )
     
     # Extract symptoms
     fever = patient_history.get("fever", False)
-    duration = patient_history.get("duration_days", 0)
-    weight_loss = patient_history.get("weight_loss", False)
-    
-    # === RED ALERT: Suspected TB or Severe Pneumonia ===
-    # High crackles + Fever + Duration > 14 days
+    duration = patient_history.get("duration_days", patient_history.get("duration", 0))
+    if isinstance(duration, str) and duration.isdigit():
+        duration = int(duration)
+    elif not isinstance(duration, (int, float)):
+        duration = 0
+        
+    # === RED ALERT ===
+    # Rule 1: High crackles + Fever + Duration >= 14 days -> Refer for GeneXpert
     if crackles > 0.7 and fever and duration >= 14:
         return (
             "RED",
-            "REFER FOR GENEXPERT TEST AT UPAZILA HEALTH COMPLEX. ISOLATE PATIENT.",
+            "REFER IMMEDIATELY FOR GENEXPERT TESTING AT NEAREST UPAZILA HEALTH COMPLEX. WEAR A MASK AND ISOLATE.",
             "🔴"
         )
     
-    # Severe crackles (> 0.85) with fever
+    # Rule 2: Severe crackles (> 0.85) with fever -> Refer for Chest X-ray
     if crackles > 0.85 and fever:
         return (
             "RED",
-            "URGENT: SUSPECTED PNEUMONIA. REFER FOR CHEST X-RAY AND BLOOD TEST IMMEDIATELY.",
+            "URGENT: SUSPECTED SEVERE PNEUMONIA. REFER FOR CHEST X-RAY AND CLINICAL EVALUATION IMMEDIATELY.",
             "🔴"
         )
     
-    # === YELLOW ALERT: Needs clinic within 48 hours ===
+    # === YELLOW ALERT ===
+    # Rule 3: Moderate risk (crackles > 0.6 or wheezes > 0.7 with fever) -> Visit clinic within 48 hours
     if crackles > 0.6 or (wheezes > 0.7 and fever):
         return (
             "YELLOW",
-            "MODERATE RISK. VISIT NEAREST UPAZILA HEALTH COMPLEX WITHIN 48 HOURS.",
+            "MODERATE RISK RESPIRATORY INDICATION. VISIT NEAREST CLINIC OR UPAZILA HEALTH COMPLEX WITHIN 48 HOURS.",
             "🟡"
         )
     
-    # === GREEN ALERT: Viral / OTC ===
+    # === GREEN ALERT ===
+    # Rule 4: Low risk (normal > 0.7 or wheezes > 0.5 without fever) -> Viral / OTC medication, no antibiotics
     if normal > 0.7 or (wheezes > 0.5 and not fever):
         return (
             "GREEN",
-            "LIKELY VIRAL COLD OR MILD ASTHMA. DO NOT PRESCRIBE ANTIBIOTICS. REST & PARACETAMOL.",
+            "LIKELY VIRAL COLD OR MILD ASTHMA. DO NOT PRESCRIBE ANTIBIOTICS. RECOMMENDED OTC TREATMENT (REST, PARACETAMOL).",
             "🟢"
         )
     
-    # Catch-all fallback
+    # Default catch-all
     return (
         "YELLOW",
-        "INCONCLUSIVE RESULT. PLEASE RE-ASSESS OR REFER TO CLINIC.",
+        "INCONCLUSIVE RESPONSE. PATIENT DEMANDS CLINICAL RE-ASSESSMENT. DISPENSE OTC REMEDIES AND REVIEW.",
         "🟡"
     )

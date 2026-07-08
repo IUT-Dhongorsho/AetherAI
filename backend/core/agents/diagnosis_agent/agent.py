@@ -1,23 +1,23 @@
 import json
-from google import genai
 from google.genai import types
 from backend.config import settings
 from backend.core.graph.state import PatientState
+from backend.services.llm.client import llm_client
 
 def diagnosis_agent(state: PatientState) -> PatientState:
     """
     Agent 5: Diagnosis & Triage Agent
     Fuses the outputs from previous agents and uses Gemini to generate a clinical recommendation.
     """
-    if not settings.GEMINI_API_KEY:
-        # Fallback if API key is not configured
-        state["diagnosis"] = {"primary": "API Key Missing", "confidence": 0.0}
+    if not llm_client:
+        # Fallback if API client is not configured
+        state["diagnosis"] = {"primary": "API Key Missing/Invalid", "confidence": 0.0}
         state["triage_level"] = "UNKNOWN"
-        state["action_text"] = "Please provide GEMINI_API_KEY in .env to get a real diagnosis."
+        state["action_text"] = "Please provide a valid GEMINI_API_KEY in .env to get a real diagnosis."
         state["citations"] = []
         return state
     
-    client = genai.Client(api_key=settings.GEMINI_API_KEY)
+    client = llm_client
     
     # Construct the prompt context from state
     context = {
@@ -73,7 +73,7 @@ def diagnosis_agent(state: PatientState) -> PatientState:
     except Exception as e:
         print(f"⚠️ LLM API Error: {e}")
         state["diagnosis"] = {"primary": "Service Unavailable", "confidence": 0.0}
-        state["triage_level"] = "YELLOW"
+        state["triage_level"] = "UNKNOWN"
         state["action_text"] = f"The AI analysis service is currently unavailable. Error details: {str(e)}. Please try again later."
         state["citations"] = []
         

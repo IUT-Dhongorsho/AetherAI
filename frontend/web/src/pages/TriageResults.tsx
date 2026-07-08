@@ -64,7 +64,7 @@ const TriageResults = () => {
 
   const handleDownloadPDF = () => {
     if (triageData.pdf_report_url) {
-      window.open(`http://127.0.0.1:8000${triageData.pdf_report_url}`, '_blank');
+      window.open(triageData.pdf_report_url, '_blank');
     } else {
       alert("PDF not available");
     }

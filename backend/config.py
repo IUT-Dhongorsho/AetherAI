@@ -10,6 +10,7 @@ class Settings:
     
     # LLM
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+    HF_TOKEN = os.getenv("HF_TOKEN", "")
     
     # Database
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./aetherai.db")

@@ -63,7 +63,7 @@ async def predict(
     audio_pred = result_state.get("audio_prediction", {})
     history = result_state.get("patient_history", {})
     
-    if not result_state.get("triage_level") or result_state.get("triage_level") == "UNKNOWN":
+    if not result_state.get("triage_level") or str(result_state.get("triage_level")).strip() in ["UNKNOWN", "", "None"]:
         fallback_level, fallback_action, _ = determine_triage(audio_pred, history)
         result_state["triage_level"] = fallback_level
         result_state["action_text"] = fallback_action

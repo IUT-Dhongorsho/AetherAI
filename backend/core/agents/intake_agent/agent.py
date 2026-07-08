@@ -15,7 +15,17 @@ def intake_agent(state: PatientState) -> PatientState:
     notes = state.get("pharmacist_notes", "").lower()
     if "fever" in notes:
         state["patient_history"]["fever"] = True
-    if "weight loss" in notes:
+    if "weight loss" in notes or "weightloss" in notes:
         state["patient_history"]["weight_loss"] = True
+        
+    # Extract duration of cough in days if specified (e.g. "15 days", "2 weeks")
+    import re
+    duration_match = re.search(r'(\d+)\s*day', notes)
+    if duration_match:
+        state["patient_history"]["duration_days"] = int(duration_match.group(1))
+    else:
+        weeks_match = re.search(r'(\d+)\s*week', notes)
+        if weeks_match:
+            state["patient_history"]["duration_days"] = int(weeks_match.group(1)) * 7
         
     return state

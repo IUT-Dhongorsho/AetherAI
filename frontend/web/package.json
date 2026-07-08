@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "proxy": "http://localhost:8000",
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
     "clsx": "^2.1.1",

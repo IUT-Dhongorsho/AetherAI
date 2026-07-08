@@ -40,7 +40,7 @@ const PatientIntake = () => {
       formData.append('pharmacist_notes', notes);
       if (age) formData.append('age', age);
 
-      const response = await fetch('http://127.0.0.1:8000/api/v1/predict', {
+      const response = await fetch('/api/v1/predict', {
         method: 'POST',
         body: formData,
       });
