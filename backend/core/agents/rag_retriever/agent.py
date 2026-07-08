@@ -2,7 +2,6 @@ import os
 import numpy as np
 import faiss
 import pickle
-from sentence_transformers import SentenceTransformer
 from backend.core.graph.state import PatientState
 
 # === Load the same embedding model used in build_index.py ===
@@ -11,6 +10,7 @@ _model = None
 def get_embedding_model():
     global _model
     if _model is None:
+        from sentence_transformers import SentenceTransformer
         _model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
     return _model
 
