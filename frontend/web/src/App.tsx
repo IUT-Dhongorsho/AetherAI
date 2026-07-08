@@ -5,7 +5,7 @@ import TriageResults from './pages/TriageResults';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/aetherai">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/intake" replace />} />
