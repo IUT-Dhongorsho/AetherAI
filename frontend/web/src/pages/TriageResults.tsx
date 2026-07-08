@@ -1,59 +1,73 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 const TriageResults = () => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  // If we navigated here directly without data, redirect to intake
   const triageData = state?.triageData;
   if (!triageData) {
     return <Navigate to="/intake" replace />;
   }
 
-  // Map API response to UI configurations
+  // Trigger entrance animation
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // --- 1. THEME MAPPING (Crisp & Professional) ---
   const getTriageTheme = () => {
     switch (triageData.triage_level) {
       case "RED":
         return {
-          wrapper: "bg-error-container border-error",
-          text: "text-on-error-container",
+          border: "border-red-500",
+          bgLight: "bg-red-50/80",
+          text: "text-red-700",
+          textDark: "text-red-900",
           icon: "warning",
-          iconBg: "bg-error/10 text-error",
-          gradient: "from-error/10 to-transparent",
-          innerBox: "bg-surface-container-lowest/60 border-error/20 text-on-error-container"
+          iconBg: "bg-red-100 text-red-600",
+          gradient: "from-red-500/5 to-transparent",
+          badge: "bg-red-500 text-white",
         };
       case "YELLOW":
         return {
-          wrapper: "bg-tertiary-container border-tertiary",
-          text: "text-on-tertiary-container",
+          border: "border-yellow-500",
+          bgLight: "bg-yellow-50/80",
+          text: "text-yellow-700",
+          textDark: "text-yellow-900",
           icon: "notification_important",
-          iconBg: "bg-tertiary/10 text-tertiary",
-          gradient: "from-tertiary/10 to-transparent",
-          innerBox: "bg-surface-container-lowest/60 border-tertiary/20 text-on-tertiary-container"
+          iconBg: "bg-yellow-100 text-yellow-600",
+          gradient: "from-yellow-500/5 to-transparent",
+          badge: "bg-yellow-500 text-white",
         };
       default: // GREEN
         return {
-          wrapper: "bg-primary-container border-primary",
-          text: "text-on-primary-container",
+          border: "border-green-500",
+          bgLight: "bg-green-50/80",
+          text: "text-green-700",
+          textDark: "text-green-900",
           icon: "check_circle",
-          iconBg: "bg-primary/10 text-primary",
-          gradient: "from-primary/10 to-transparent",
-          innerBox: "bg-surface-container-lowest/60 border-primary/20 text-on-primary-container"
+          iconBg: "bg-green-100 text-green-600",
+          gradient: "from-green-500/5 to-transparent",
+          badge: "bg-green-500 text-white",
         };
     }
   };
 
   const theme = getTriageTheme();
-  
-  // Format the citations list properly
+
+  // --- 2. HELPERS ---
   const renderCitations = () => {
     if (!triageData.citations || triageData.citations.length === 0) return null;
     return (
-      <div className={`mt-md pt-md border-t border-black/10`}>
-        <h4 className={`font-label-sm text-label-sm font-bold opacity-70 mb-1 ${theme.text}`}>EVIDENCE BASIS</h4>
-        <ul className={`font-body-sm text-body-sm list-disc pl-4 opacity-90 ${theme.text}`}>
+      <div className="mt-4 pt-4 border-t border-outline-variant">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-secondary mb-1">
+          Evidence Basis
+        </h4>
+        <ul className="text-sm list-disc pl-4 text-on-surface-variant space-y-0.5">
           {triageData.citations.map((cite: string, idx: number) => (
             <li key={idx}>{cite}</li>
           ))}
@@ -66,124 +80,202 @@ const TriageResults = () => {
     if (triageData.pdf_report_url) {
       window.open(triageData.pdf_report_url, '_blank');
     } else {
-      alert("PDF not available");
+      alert("PDF report not available for this session.");
     }
   };
 
+  // --- 3. RENDER ---
   return (
-    <div className="max-w-container-max mx-auto p-md md:p-lg lg:p-xl">
-      {/* Context Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-lg border-b border-outline-variant pb-md">
+    <div className="max-w-6xl mx-auto px-4 py-6 md:px-8 md:py-10">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 border-b border-outline-variant pb-4">
         <div>
-          <div className="flex items-center gap-sm mb-xs">
-            <span className="font-mono-sm text-mono-sm text-secondary bg-surface-container-highest px-xs py-[2px] rounded">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs font-mono text-secondary bg-surface-container-highest px-2 py-0.5 rounded">
               ID: {triageData.patient_id}
             </span>
-            <span className="font-mono-sm text-mono-sm text-secondary flex items-center gap-[2px]">
+            <span className="text-xs font-mono text-secondary flex items-center gap-1">
               <span className="material-symbols-outlined text-[14px]">schedule</span> Just Now
             </span>
           </div>
-          <h1 className="font-display text-display text-on-surface">Analysis Complete</h1>
+          <h1 className="font-display text-3xl md:text-4xl text-on-surface tracking-tight">
+            Analysis Complete
+          </h1>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-lg">
-        {/* Primary Focus Area (Cols 1-8) */}
-        <div className="col-span-1 md:col-span-8 flex flex-col gap-lg">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* --- PRIMARY CONTENT (Cols 1-8) --- */}
+        <div className="lg:col-span-8 flex flex-col gap-6">
           
-          {/* Dynamic Triage Alert Card */}
-          <div className={`${theme.wrapper} border-l-[6px] rounded-r-xl p-md md:p-lg shadow-sm relative overflow-hidden flex flex-col sm:flex-row gap-md sm:gap-lg items-start transition-colors duration-500`}>
-            <div className={`absolute inset-0 bg-gradient-to-r ${theme.gradient} pointer-events-none`}></div>
-            <div className={`${theme.iconBg} p-sm rounded-full flex-shrink-0 z-10`}>
-              <span className="material-symbols-outlined font-display text-display icon-fill" style={{ fontSize: '48px', lineHeight: '48px' }}>{theme.icon}</span>
-            </div>
-            <div className="z-10 flex-1">
-              <span className={`font-label-md text-label-md ${theme.text} uppercase tracking-widest font-bold mb-xs block opacity-80`}>
-                {triageData.triage_level} PRIORITY MATCH
-              </span>
-              <h2 className={`font-headline-lg text-headline-lg ${theme.text} mb-sm`}>
-                {triageData.diagnosis?.primary || "Condition Analyzed"}
-              </h2>
-              
-              <div className={`${theme.innerBox} border rounded-lg p-md mb-md backdrop-blur-sm`}>
-                <h3 className="font-label-md text-label-md font-semibold flex items-center gap-xs mb-xs">
-                  <span className="material-symbols-outlined text-[16px]">integration_instructions</span>
-                  Clinical Instructions
-                </h3>
-                <p className="font-body-lg text-body-lg">
-                  {triageData.action_text}
-                </p>
-                {renderCitations()}
-              </div>
-              
-              <div className="flex flex-wrap gap-md mt-sm">
-                <button 
-                  onClick={handleDownloadPDF}
-                  className="bg-primary text-on-primary font-label-md text-label-md px-md py-sm rounded-lg flex items-center gap-xs hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm"
+          {/* Dynamic Triage Card with Entrance Animation */}
+          <div
+            className={`transform transition-all duration-700 ease-out ${
+              isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            }`}
+          >
+            <div
+              className={`bg-surface-container-lowest border-l-[6px] ${theme.border} rounded-xl shadow-sm overflow-hidden relative`}
+            >
+              {/* Subtle Gradient Overlay */}
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} pointer-events-none`}
+              ></div>
+
+              <div className="relative z-10 p-6 md:p-8 flex flex-col sm:flex-row gap-5 sm:gap-8 items-start">
+                {/* Icon */}
+                <div
+                  className={`${theme.iconBg} p-4 rounded-full flex-shrink-0 shadow-sm`}
                 >
-                  <span className="material-symbols-outlined text-[18px]">picture_as_pdf</span>
-                  Download Referral PDF
-                </button>
-                <button 
-                  onClick={() => navigate('/intake')}
-                  className="bg-surface-container-lowest text-on-surface border border-outline-variant font-label-md text-label-md px-md py-sm rounded-lg hover:bg-surface-container-lowest/80 transition-colors"
-                >
-                  Start New Patient
-                </button>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: '40px', lineHeight: '40px' }}
+                  >
+                    {theme.icon}
+                  </span>
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 w-full">
+                  <div className="flex flex-wrap items-center gap-3 mb-1">
+                    <span
+                      className={`text-xs font-bold uppercase tracking-widest ${theme.text}`}
+                    >
+                      {triageData.triage_level} Priority Match
+                    </span>
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${theme.badge} uppercase tracking-wider`}
+                    >
+                      {Math.round((triageData.diagnosis?.confidence || 0) * 100)}% Confidence
+                    </span>
+                  </div>
+
+                  <h2
+                    className={`text-2xl font-bold mb-4 ${theme.textDark}`}
+                  >
+                    {triageData.diagnosis?.primary || "Condition Analyzed"}
+                  </h2>
+
+                  {/* Clinical Instructions Box */}
+                  <div
+                    className={`${theme.bgLight} border ${theme.border} rounded-lg p-4 md:p-5 backdrop-blur-sm`}
+                  >
+                    <h3 className="text-xs font-semibold flex items-center gap-1.5 text-secondary uppercase tracking-wider mb-2">
+                      <span className="material-symbols-outlined text-[16px]">
+                        integration_instructions
+                      </span>
+                      Clinical Instructions
+                    </h3>
+                    <p className="text-base md:text-lg font-medium text-on-surface">
+                      {triageData.action_text}
+                    </p>
+                    {renderCitations()}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-wrap gap-3 mt-6">
+                    <button
+                      onClick={handleDownloadPDF}
+                      className="bg-primary text-on-primary text-sm font-bold px-5 py-2.5 rounded-lg flex items-center gap-2 shadow-sm hover:bg-primary/90 hover:shadow-md hover:scale-[1.02] transition-all duration-200"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        picture_as_pdf
+                      </span>
+                      Download Referral PDF
+                    </button>
+                    <button
+                      onClick={() => navigate('/intake')}
+                      className="bg-surface-container text-on-surface border border-outline-variant text-sm font-bold px-5 py-2.5 rounded-lg flex items-center gap-2 hover:bg-surface-container-higher hover:shadow-sm transition-all duration-200"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        add
+                      </span>
+                      Start New Patient
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* AI Insights Bento Grid */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
-            <div 
-              className="flex items-center justify-between mb-md cursor-pointer group"
+          {/* --- AI INSIGHTS BENTO (Spectrogram + Metrics) --- */}
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+            <div
+              className="flex items-center justify-between mb-4 cursor-pointer group"
               onClick={() => setIsExpanded(!isExpanded)}
             >
-              <h3 className="font-headline-md text-headline-md text-on-surface flex items-center gap-sm">
+              <h3 className="text-lg font-bold text-on-surface flex items-center gap-2">
                 <span className="material-symbols-outlined text-primary">memory</span>
                 AI Diagnostic Insights
               </h3>
-              <span 
-                className={`material-symbols-outlined text-secondary group-hover:text-primary transition-colors transform duration-200 ${isExpanded ? '' : '-rotate-90'}`}
+              <span
+                className={`material-symbols-outlined text-secondary group-hover:text-primary transition-transform duration-300 ${
+                  isExpanded ? '' : '-rotate-90'
+                }`}
               >
                 expand_more
               </span>
             </div>
-            
-            <div 
-              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md transition-all duration-300 origin-top overflow-hidden ${isExpanded ? 'max-h-[1000px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'}`}
+
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 transition-all duration-500 ease-in-out origin-top ${
+                isExpanded
+                  ? 'max-h-[800px] opacity-100 mt-1'
+                  : 'max-h-0 opacity-0 mt-0 overflow-hidden'
+              }`}
             >
-              {/* Visualization Card */}
-              <div className="col-span-1 sm:col-span-2 lg:col-span-2 bg-surface-bright border border-outline-variant rounded-lg p-sm relative overflow-hidden group">
-                <div className="flex justify-between items-center mb-xs px-xs">
-                  <span className="font-label-md text-label-md text-secondary">Audio Spectrogram Analysis</span>
-                  <span className="font-mono-sm text-mono-sm text-primary flex items-center gap-xs">
+              {/* Spectrogram Visualization Card */}
+              <div className="sm:col-span-2 bg-surface-bright border border-outline-variant rounded-xl p-4 overflow-hidden group relative">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs font-semibold text-secondary uppercase tracking-wider">
+                    Audio Spectrogram Analysis
+                  </span>
+                  <span className="text-[10px] font-mono text-primary flex items-center gap-1">
                     <span className="material-symbols-outlined text-[14px]">graphic_eq</span> Live
                   </span>
                 </div>
-                <div className="h-32 w-full rounded bg-on-surface-variant relative overflow-hidden">
-                  <div className="absolute inset-0 bg-grid-pattern opacity-20"></div>
-                  <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-on-surface-variant to-transparent pointer-events-none"></div>
+                {/* CSS Spectrogram (Dynamic Colorful Bars) */}
+                <div className="relative h-20 w-full rounded-lg bg-surface-container-low/50 overflow-hidden flex items-end justify-around p-1">
+                  {[...Array(32)].map((_, i) => {
+                    const height = 20 + Math.random() * 60; // Simulate varying frequencies
+                    const hue = 180 + Math.sin(i * 0.8) * 40; // Teal to Blue spectrum
+                    return (
+                      <div
+                        key={i}
+                        className="w-1.5 rounded-t-sm transition-all duration-300 hover:scale-y-110 origin-bottom"
+                        style={{
+                          height: `${height}%`,
+                          backgroundColor: `hsl(${hue}, 80%, 60%)`,
+                          opacity: 0.7 + Math.random() * 0.3,
+                          animationDelay: `${i * 30}ms`,
+                        }}
+                      />
+                    );
+                  })}
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface-bright/10 to-transparent pointer-events-none"></div>
                 </div>
               </div>
 
-              {/* Metrics & Findings */}
-              <div className="col-span-1 flex flex-col gap-md">
-                <div className="bg-surface-bright border border-outline-variant rounded-lg p-md flex-1 flex flex-col justify-center">
-                  <span className="font-label-md text-label-md text-secondary mb-xs">Model Used</span>
-                  <span className="font-body-lg text-body-lg text-on-surface font-medium leading-tight">
+              {/* Metrics Stack */}
+              <div className="flex flex-col gap-3">
+                <div className="bg-surface-bright border border-outline-variant rounded-xl p-4 flex-1 flex flex-col justify-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-secondary">
+                    Model Used
+                  </span>
+                  <span className="text-sm font-bold text-on-surface leading-tight">
                     ResNet50 + Gemini 3.5 Flash Fusion
                   </span>
                 </div>
-                <div className="bg-surface-bright border border-outline-variant rounded-lg p-md flex-1 flex flex-col justify-center relative overflow-hidden">
-                  <div className="absolute right-0 top-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none"></div>
-                  <span className="font-label-md text-label-md text-secondary mb-xs">Diagnostic Confidence</span>
-                  <div className="flex items-baseline gap-xs">
-                    <span className="font-display text-display text-primary tracking-tighter">
+                <div className="bg-surface-bright border border-outline-variant rounded-xl p-4 flex-1 flex flex-col justify-center relative overflow-hidden">
+                  <div className="absolute right-0 top-0 w-12 h-12 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-secondary">
+                    Diagnostic Confidence
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-bold text-primary tracking-tight">
                       {Math.round((triageData.diagnosis?.confidence || 0) * 100)}
                     </span>
-                    <span className="font-headline-md text-headline-md text-primary">%</span>
+                    <span className="text-lg font-bold text-primary">%</span>
                   </div>
                 </div>
               </div>
@@ -191,36 +283,60 @@ const TriageResults = () => {
           </div>
         </div>
 
-        {/* Secondary Area / Triage Queue Context */}
-        <div className="col-span-1 md:col-span-4 flex flex-col gap-md">
-          <h3 className="font-headline-md text-headline-md text-on-surface mb-xs border-b border-outline-variant pb-xs">Recent Queue Activity</h3>
-          
-          <div className="bg-surface-container-lowest border-l-[4px] border-tertiary rounded-r-lg p-md shadow-sm hover:shadow-md transition-shadow cursor-default group">
-            <div className="flex items-start gap-sm">
-              <span className="material-symbols-outlined text-tertiary mt-[2px]">warning</span>
-              <div>
-                <div className="flex justify-between items-center mb-xs">
-                  <span className="font-mono-sm text-mono-sm text-secondary">PT-89920-Y</span>
-                  <span className="font-label-md text-label-md text-secondary">10 min ago</span>
+        {/* --- SECONDARY CONTENT (Cols 9-12) --- */}
+        <div className="lg:col-span-4 flex flex-col gap-4">
+          <h3 className="text-lg font-bold text-on-surface border-b border-outline-variant pb-2">
+            Recent Queue Activity
+          </h3>
+
+          {/* Recent Activity Item 1 */}
+          <div className="bg-surface-container-lowest border-l-4 border-tertiary rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-default group">
+            <div className="flex items-start gap-3">
+              <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">
+                warning
+              </span>
+              <div className="flex-1">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-mono text-secondary">PT-89920-Y</span>
+                  <span className="text-[10px] font-mono text-secondary">10 min ago</span>
                 </div>
-                <h4 className="font-body-md text-body-md font-semibold text-on-surface mb-xs">Medical Review Recommended</h4>
-                <p className="font-body-md text-body-md text-on-surface-variant">Refer to clinic within 48 hours for follow-up evaluation.</p>
+                <h4 className="text-sm font-semibold text-on-surface mb-0.5">
+                  Medical Review Recommended
+                </h4>
+                <p className="text-sm text-on-surface-variant">
+                  Refer to clinic within 48 hours for follow-up.
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-surface-container-lowest border-l-[4px] border-primary rounded-r-lg p-md shadow-sm hover:shadow-md transition-shadow cursor-default group opacity-80">
-            <div className="flex items-start gap-sm">
-              <span className="material-symbols-outlined text-primary mt-[2px]">check_circle</span>
-              <div>
-                <div className="flex justify-between items-center mb-xs">
-                  <span className="font-mono-sm text-mono-sm text-secondary">PT-89919-Z</span>
-                  <span className="font-label-md text-label-md text-secondary">45 min ago</span>
+          {/* Recent Activity Item 2 */}
+          <div className="bg-surface-container-lowest border-l-4 border-primary rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-default group opacity-80">
+            <div className="flex items-start gap-3">
+              <span className="material-symbols-outlined text-primary text-[20px] mt-0.5">
+                check_circle
+              </span>
+              <div className="flex-1">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-mono text-secondary">PT-89919-Z</span>
+                  <span className="text-[10px] font-mono text-secondary">45 min ago</span>
                 </div>
-                <h4 className="font-body-md text-body-md font-semibold text-on-surface mb-xs">Viral/Common Cold</h4>
-                <p className="font-body-md text-body-md text-on-surface-variant font-medium">DO NOT dispense antibiotics.</p>
+                <h4 className="text-sm font-semibold text-on-surface mb-0.5">
+                  Viral/Common Cold
+                </h4>
+                <p className="text-sm text-on-surface-variant font-medium">
+                  DO NOT dispense antibiotics.
+                </p>
               </div>
             </div>
+          </div>
+
+          {/* Empty State / Future Queue */}
+          <div className="text-center py-6 border border-dashed border-outline-variant rounded-lg bg-surface-container-low">
+            <span className="material-symbols-outlined text-secondary text-[32px]">
+              history
+            </span>
+            <p className="text-sm text-secondary mt-1">More patient results will appear here.</p>
           </div>
         </div>
       </div>
