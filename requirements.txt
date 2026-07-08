@@ -25,7 +25,7 @@ google-genai==1.20.0
 
 # === Hugging Face API Client ===
 huggingface-hub
-
+sentence-transformers>=2.2.2
 # === Frontend / UI ===
 gradio==5.38.0
 
